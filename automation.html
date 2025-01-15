@@ -84,49 +84,48 @@
     <p id="result">Waiting for input...</p>
 
     <script>
-        // Predefined array of valid codes (as strings)
-        const validCodes = [
-            "Transaction Key CAE9VTYT1P", "CAF5WO5EUZ", "CAF5WQBNK3", "CAF8WQMYNG", 
-            "CAE5VVU14X", "CAE4VVQKRO", "CAE5VVWMKT", "CAE5WDYH2R", "CAE8WDZXSC", 
-            "CAF5WEGSPP", "CAF9WF78EN", "CAF6WHPD9K", "CAF7WRHE07", "73KI4C4L", 
-            "73KI4N1A", "Abcd", "sabbir", "CAF3WVZTSD", "{ByPassing}", "CAF7X0CFP7", 
-            "01313825738", "01914133114"
-        ];
+    // Predefined array of valid codes (as strings)
+    const validCodes = [
+        "Transaction Key CAE9VTYT1P", "CAF5WO5EUZ", "CAF5WQBNK3", "CAF8WQMYNG", 
+        "CAE5VVU14X", "CAE4VVQKRO", "CAE5VVWMKT", "CAE5WDYH2R", "CAE8WDZXSC", 
+        "CAF5WEGSPP", "CAF9WF78EN", "CAF6WHPD9K", "CAF7WRHE07", "73KI4C4L", 
+        "73KI4N1A", "Abcd", "sabbir", "CAF3WVZTSD", "{ByPassing}", "CAF7X0CFP7", 
+        "01313825738", "01914133114"
+    ];
 
-        // Get elements
-        const codeInput = document.getElementById("codeInput");
-        const verifyBtn = document.getElementById("verifyBtn");
-        const result = document.getElementById("result");
+    // Get elements
+    const codeInput = document.getElementById("codeInput");
+    const verifyBtn = document.getElementById("verifyBtn");
+    const result = document.getElementById("result");
 
-        // Add event listener to the button
-        verifyBtn.addEventListener("click", () => {
-            const userInput = codeInput.value.trim(); // Get user input as a string
+    // Add event listener to the button
+    verifyBtn.addEventListener("click", () => {
+        const userInput = codeInput.value.trim(); // Trim whitespace from input
 
-            if (!userInput) {
-                showResult("Invalid input. Please enter a code.", "not-verified");
-                return;
-            }
-
-            if (validCodes.includes(userInput)) {
-                showResult("Verified", "verified");
-            } else {
-                showResult("Not Verified", "not-verified");
-            }
-        });
-
-        // Show result with animation
-        function showResult(message, statusClass) {
-            result.textContent = message;
-            result.className = statusClass;
-            result.style.opacity = "1";
-            result.style.transform = "translateY(0)";
-
-            // Reset animation after 2 seconds
-            setTimeout(() => {
-                result.style.opacity = "0";
-                result.style.transform = "translateY(-20px)";
-            }, 2000);
+        // Check if userInput is not empty and exists in the validCodes array
+        if (userInput === "") {
+            showResult("Invalid input. Please enter a code.", "not-verified");
+        } else if (validCodes.includes(userInput)) {
+            showResult("Verified", "verified");
+        } else {
+            showResult("Not Verified", "not-verified");
         }
-    </script>
+    });
+
+    // Function to show result with animation
+    function showResult(message, statusClass) {
+        result.textContent = message;
+        result.className = statusClass;
+        result.style.opacity = "1";
+        result.style.transform = "translateY(0)";
+
+        // Reset animation after 2 seconds
+        setTimeout(() => {
+            result.style.opacity = "0";
+            result.style.transform = "translateY(-20px)";
+        }, 2000);
+    }
+</script>
+
 </body>
 </html>
