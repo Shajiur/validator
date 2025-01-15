@@ -84,8 +84,14 @@
     <p id="result">Waiting for input...</p>
 
     <script>
-        // Predefined array of valid codes
-        const validCodes = [123, 124, 125, 126, 127];
+        // Predefined array of valid codes (as strings)
+        const validCodes = [
+            "Transaction Key CAE9VTYT1P", "CAF5WO5EUZ", "CAF5WQBNK3", "CAF8WQMYNG", 
+            "CAE5VVU14X", "CAE4VVQKRO", "CAE5VVWMKT", "CAE5WDYH2R", "CAE8WDZXSC", 
+            "CAF5WEGSPP", "CAF9WF78EN", "CAF6WHPD9K", "CAF7WRHE07", "73KI4C4L", 
+            "73KI4N1A", "Abcd", "sabbir", "CAF3WVZTSD", "{ByPassing}", "CAF7X0CFP7", 
+            "01313825738", "01914133114"
+        ];
 
         // Get elements
         const codeInput = document.getElementById("codeInput");
@@ -94,10 +100,10 @@
 
         // Add event listener to the button
         verifyBtn.addEventListener("click", () => {
-            const userInput = parseInt(codeInput.value.trim(), 10); // Get and parse user input
+            const userInput = codeInput.value.trim(); // Get user input as a string
 
-            if (isNaN(userInput)) {
-                showResult("Invalid input. Please enter a number.", "not-verified");
+            if (!userInput) {
+                showResult("Invalid input. Please enter a code.", "not-verified");
                 return;
             }
 
