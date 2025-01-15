@@ -3,116 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Scanner</title>
-    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+    <title>Code Verification</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            background-color: #eaffea; /* Lime green light background */
+            color: #006400; /* Dark green for text */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
+            text-align: center;
         }
-        #scanner {
-            border: 2px solid black;
+
+        h1 {
+            font-size: 3rem;
             margin-bottom: 20px;
         }
-        #result {
-            font-size: 24px;
+
+        input[type="text"] {
+            width: 80%;
+            max-width: 300px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid #32cd32; /* Lime green border */
+            border-radius: 5px;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 10px #32cd32;
+        }
+
+        button {
             margin-top: 20px;
             padding: 10px 20px;
-            border-radius: 5px;
-            transition: all 0.5s ease;
-        }
-        #scan-btn {
-            padding: 10px 20px;
-            font-size: 18px;
-            background-color: #007bff;
+            font-size: 1rem;
+            background-color: #32cd32; /* Lime green button */
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
-        #scan-btn:hover {
-            background-color: #0056b3;
+
+        button:hover {
+            background-color: #228b22; /* Darker green */
+            transform: scale(1.05);
+        }
+
+        #result {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .verified {
+            background-color: #32cd32; /* Verified color */
+            color: white;
+        }
+
+        .not-verified {
+            background-color: #ff6347; /* Tomato red for not verified */
+            color: white;
         }
     </style>
 </head>
 <body>
-    <h1>QR Code Scanner</h1>
-    <video id="scanner" width="300" height="300" autoplay></video>
-    <button id="scan-btn">Scan QR Code</button>
-    <p id="result">Scan a QR Code...</p>
+    <h1>Code Verification</h1>
+    <input type="text" id="codeInput" placeholder="Enter your code here...">
+    <button id="verifyBtn">Verify</button>
+    <p id="result">Waiting for input...</p>
 
     <script>
-        // Predefined array of valid QR codes (array of numbers as requested)
+        // Predefined array of valid codes
         const validCodes = [123, 124, 125, 126, 127];
 
-        // Set up the video stream
-        const video = document.getElementById("scanner");
-        const resultElement = document.getElementById("result");
-        const scanBtn = document.getElementById("scan-btn");
-        let scanning = false;
+        // Get elements
+        const codeInput = document.getElementById("codeInput");
+        const verifyBtn = document.getElementById("verifyBtn");
+        const result = document.getElementById("result");
 
-        // Access the camera and set up video feed
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-            .then(function (stream) {
-                video.srcObject = stream;
-                video.setAttribute("playsinline", true); // For iPhone
-            })
-            .catch(function (err) {
-                console.error("Error accessing camera: ", err);
-            });
+        // Add event listener to the button
+        verifyBtn.addEventListener("click", () => {
+            const userInput = parseInt(codeInput.value.trim(), 10); // Get and parse user input
 
-        // Start scanning when the button is clicked
-        scanBtn.addEventListener("click", () => {
-            scanning = true;
-            resultElement.textContent = "Scanning...";
-            resultElement.style.color = "black";
-            requestAnimationFrame(scanQRCode);
+            if (isNaN(userInput)) {
+                showResult("Invalid input. Please enter a number.", "not-verified");
+                return;
+            }
+
+            if (validCodes.includes(userInput)) {
+                showResult("Verified", "verified");
+            } else {
+                showResult("Not Verified", "not-verified");
+            }
         });
 
-        // Scan the video for QR codes
-        function scanQRCode() {
-            if (!scanning) return;
+        // Show result with animation
+        function showResult(message, statusClass) {
+            result.textContent = message;
+            result.className = statusClass;
+            result.style.opacity = "1";
+            result.style.transform = "translateY(0)";
 
-            const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d");
-            canvas.height = video.videoHeight;
-            canvas.width = video.videoWidth;
-
-            // Draw the current frame onto the canvas
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            // Decode the QR code from the canvas
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            const code = jsQR(imageData.data, canvas.width, canvas.height);
-
-            if (code) {
-                const scannedCode = parseInt(code.data); // Convert scanned code to a number
-                // Check if the scanned QR code is in the valid array
-                if (validCodes.includes(scannedCode)) {
-                    showResult("Verified", "green");
-                } else {
-                    showResult("Not Verified", "red");
-                }
-                scanning = false; // Stop scanning after a successful detection
-            } else {
-                requestAnimationFrame(scanQRCode);
-            }
-        }
-
-        // Show the result with animation
-        function showResult(message, color) {
-            resultElement.textContent = message;
-            resultElement.style.color = color;
-            resultElement.style.transform = "scale(1.2)";
+            // Reset animation after 2 seconds
             setTimeout(() => {
-                resultElement.style.transform = "scale(1)";
-            }, 300);
+                result.style.opacity = "0";
+                result.style.transform = "translateY(-20px)";
+            }, 2000);
         }
     </script>
 </body>
