@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #scanner {
+            border: 2px solid black;
+            margin-bottom: 20px;
+        }
+        #result {
+            font-size: 24px;
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.5s ease;
+        }
+        #scan-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #scan-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>QR Code Scanner</h1>
+    <video id="scanner" width="300" height="300" autoplay></video>
+    <button id="scan-btn">Scan QR Code</button>
+    <p id="result">Scan a QR Code...</p>
+
+    <script>
+        // Predefined array of valid QR codes (array of numbers as requested)
+        const validCodes = [123, 124, 125, 126, 127];
+
+        // Set up the video stream
+        const video = document.getElementById("scanner");
+        const resultElement = document.getElementById("result");
+        const scanBtn = document.getElementById("scan-btn");
+        let scanning = false;
+
+        // Access the camera and set up video feed
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+            .then(function (stream) {
+                video.srcObject = stream;
+                video.setAttribute("playsinline", true); // For iPhone
+            })
+            .catch(function (err) {
+                console.error("Error accessing camera: ", err);
+            });
+
+        // Start scanning when the button is clicked
+        scanBtn.addEventListener("click", () => {
+            scanning = true;
+            resultElement.textContent = "Scanning...";
+            resultElement.style.color = "black";
+            requestAnimationFrame(scanQRCode);
+        });
+
+        // Scan the video for QR codes
+        function scanQRCode() {
+            if (!scanning) return;
+
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            canvas.height = video.videoHeight;
+            canvas.width = video.videoWidth;
+
+            // Draw the current frame onto the canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Decode the QR code from the canvas
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+            if (code) {
+                const scannedCode = parseInt(code.data); // Convert scanned code to a number
+                // Check if the scanned QR code is in the valid array
+                if (validCodes.includes(scannedCode)) {
+                    showResult("Verified", "green");
+                } else {
+                    showResult("Not Verified", "red");
+                }
+                scanning = false; // Stop scanning after a successful detection
+            } else {
+                requestAnimationFrame(scanQRCode);
+            }
+        }
+
+        // Show the result with animation
+        function showResult(message, color) {
+            resultElement.textContent = message;
+            resultElement.style.color = color;
+            resultElement.style.transform = "scale(1.2)";
+            setTimeout(() => {
+                resultElement.style.transform = "scale(1)";
+            }, 300);
+        }
+    </script>
+</body>
+</html>
