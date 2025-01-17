@@ -83,63 +83,211 @@
     <button id="verifyBtn">Verify</button>
     <p id="result">Waiting for input...</p>
 
-<script>
 
-    const validCodes = []; 
-validCodes.push(
-    "CAE9VTYT1P", "CAE4VVQKRO", "CAE5VVU14X", "CAE5VVWMKT", "CAE5WDYH2R", 
-    "CAE8WDZXSC", "CAF5WEGSPP", "CAF9WF78EN", "CAF6WHPD9K", "CAF5WO5EUZ", 
-    "CAF5WQBNK3", "CAF8WQMYNG", "CAF7WRHE07", "73KI4C4L", "73KI4N1A", 
-    "CAF3WVZTSD", "CAF7X0CFP7", "73KJINM0", "CAF1028B5P", "73KJRYJW", 
-    "CAG00B7B74", "CAG90BLYL7", "CAG40BM3ZS", "73KKURQ0", "CAG90FMLVZ", 
-    "CAG00HO92S", "CAG30HLOZB", "CAG70ID65Z", "paid_by_cash", "CAG50KR2LF", 
-    "CAG50LP9Z5", "CAG20MKMNU", "CAG50N33ZL", "73KLVGHL", "CAG00NJHJM", 
-    "73KLWB1F", "73KLX31O", "73KLZC80", "CAG80NXOEO", "CAG50ODZRV", 
-    "73KLZC80", "CAG60QAFLE"
-);
+    <script>
 
-    // Get elements
-    const codeInput = document.getElementById("codeInput");
-    const verifyBtn = document.getElementById("verifyBtn");
-    const result = document.getElementById("result");
+        // Initialize validCodes with default values or load from localStorage
+let validCodes = JSON.parse(localStorage.getItem("validCodes")) || {
+  "CAE9VTYT1P": 0,
+  "CAE4VVQKRO": 0,
+  "CAE5VVU14X": 0,
+  "CAE5VVWMKT": 0,
+  "CAE5WDYH2R": 0,
+  "CAE8WDZXSC": 0,
+  "CAF5WEGSPP": 0,
+  "CAF9WF78EN": 0,
+  "CAF6WHPD9K": 0,
+  "CAF5WO5EUZ": 0,
+  "CAF5WQBNK3": 0,
+  "CAF8WQMYNG": 0,
+  "CAF7WRHE07": 0,
+  "73KI4C4L": 0,
+  "73KI4N1A": 0,
+  "CAG515TC7B": 0,
+  "CAF3WVZTSD": 0,
+  "CAF7X0CFP7": 0,
+  "73KJINM0": 0,
+  "CAF1028B5P": 0,
+  "73KJRYJW": 0,
+  "CAG00B7B74": 0,
+  "CAG90BLYL7": 0,
+  "CAG40BM3ZS": 0,
+  "73KKURQ0": 0,
+  "CAG90FMLVZ": 0,
+  "CAG00HO92S": 0,
+  "CAG30HLOZB": 0,
+  "CAG70ID65Z": 0,
+  "paid_by_cash": 0,
+  "CAG50KR2LF": 0,
+  "CAG50LP9Z5": 0,
+  "CAG20MKMNU": 0,
+  "CAG50N33ZL": 0,
+  "73KLVGHL": 0,
+  "CAG00NJHJM": 0,
+  "73KLWB1F": 0,
+  "73KLX31O": 0,
+  "73KLZC80": 0,
+  "CAG80NXOEO": 0,
+  "CAG50ODZRV": 0,
+  "CAG60QAFLE": 0,
+  "CAG70RP94H": 0,
+  "CAG10S9OYL": 0,
+  "CAG60SIDZM": 0,
+  "CAG90SOCPP": 0,
+  "73KMHK8H": 0,
+  "CAG90U75KR": 0,
+  "CAG50UX3RH": 0,
+  "CAG10VS38V": 0,
+  "CAG40WDQWQ": 0,
+  "CAG10WRR2N": 0,
+  "CAG20XQWWO": 0,
+  "CAG60X7XU8": 0,
+  "73KMYX1H": 0,
+  "CAG80ZCMUY": 0,
+  "CAG50ZUD4D": 0,
+  "verified_by_saju": 0,
+  "CAG410MT70": 0,
+  "CAH51VQNBN": 0,
+  "CAG811G8AW": 0,
+  "CAG2123B82": 0,
+  "CAG612867C": 0,
+  "CAG412AC11": 0,
+  "CAG112E4OV": 0,
+  "CAG0135BVY": 0,
+  "CAG113I7ST": 0,
+  "CAG213FS5K": 0,
+  "CAG313IX85": 0,
+  "CAG913MTZ9": 0,
+  "CAG513Q4OR": 0,
+  "CAG213U5PS": 0,
+  "CAG813UU18": 0,
+  "CAG0145J2O": 0,
+  "CAG714FUAR": 0,
+  "CAG414ICZY": 0,
+  "CAG61500FU": 0,
+  "CAG01526WO": 0,
+  "CAG71559TD": 0,
+  "CAG1156H2Z": 0,
+  "CAG8157QPE": 0,
+  "CAG015AMPW": 0,
+  "CAG915FRBZ": 0,
+  "CAG815SQFS": 0,
+  "CAG61621B0": 0,
+  "CAG8161YN8": 0,
+  "73KNX630": 0,
+  "ref_tasnim_vai": 0,
+  "CAG216UREO": 0,
+  "CAG916WW8P": 0,
+  "CAG8172CKG": 0,
+  "CAG81795QA": 0,
+  "CAG517BCLX": 0,
+  "CAG917ZL7N": 0,
+  "73KO3PDI": 0,
+  "CAG218310O": 0,
+  "CAG217YBRW": 0,
+  "CAG7183AAF": 0,
+  "CAG5188JDL": 0,
+  "CAG218EAJK": 0,
+  "CAG218EN42": 0,
+  "CAG818FPB8": 0,
+  "73KO5BUH": 0,
+  "CAG718J24D": 0,
+  "CAG218KUZ8": 0,
+  "CAG518L0QJ": 0,
+  "CAG618NYUA": 0,
+  "CAG818NBAA": 0,
+  "CAG918RFQR": 0,
+  "73KO7EER": 0,
+  "CAG818WP7A": 0,
+  "CAG0190FVY": 0,
+  "CAG118YK53": 0,
+  "CAH21UQP1E": 0,
+  "CAG71968H1": 0,
+  "CAG21964SY": 0,
+  "CAG619BYVK": 0,
+  "73KO9SLX": 0,
+  "CAG919F27P": 0,
+  "CAG019HROC": 0,
+  "73KOA4QK": 0,
+  "73KOA9RP": 0,
+  "CAG919J9ZV": 0,
+  "CAG319JA5T": 0,
+  "CAG319JPBX": 0,
+  "mahmudul": 0,
+  "CAG419QN4G": 0,
+  "CAG919QL2P": 0,
+  "CAG919QU6R": 0,
+  "CAG819UKMG": 0,
+  "73KOBXMM": 0,
+  "73KOC63Y": 0,
+  "CAH019XDZ4": 0,
+  "CAG519OC81": 0,
+  "CAH21AQZ8C": 0,
+  "CAH71F2YGJ": 0,
+  "CAH41LHFD2": 0,
+  "CASS": 0
+};
 
-    // Function to validate the input code
-    function validateCode() {
-        const userInput = codeInput.value.trim(); // Trim whitespace from input
 
-        // Check if userInput is not empty and exists in the validCodes array
-        if (userInput === "") {
-            showResult("Invalid input. Please enter a code.", "not-verified");
-        } else if (validCodes.includes(userInput)) {
-            showResult("Verified", "verified");
-        } else {
-            showResult("Not Verified", "not-verified");
-        }
+// Save the updated validCodes object to localStorage
+function saveToStorage() {
+  localStorage.setItem("validCodes", JSON.stringify(validCodes));
+}
+
+// Get elements
+const codeInput = document.getElementById("codeInput");
+const verifyBtn = document.getElementById("verifyBtn");
+const result = document.getElementById("result");
+
+// Function to validate the input code
+function validateCode() {
+  const userInput = codeInput.value.trim(); // Trim whitespace from input
+
+  // Check if userInput is not empty
+  if (userInput === "") {
+    showResult("Invalid input. Please enter a code.", "not-verified");
+    return;
+  }
+
+  // Check if the code exists in validCodes
+  if (userInput in validCodes) {
+    validCodes[userInput] += 1; // Increment the value
+    saveToStorage(); // Persist updated data
+
+    if (validCodes[userInput] === 1) {
+      showResult("Verified", "verified");
+    } else {
+      showResult(`Checked ${validCodes[userInput]} times`, "checked-again");
     }
+  } else {
+    showResult("Not Verified", "not-verified");
+  }
+}
 
-    // Add event listener to the button
-    verifyBtn.addEventListener("click", validateCode);
+// Add event listener to the button
+verifyBtn.addEventListener("click", validateCode);
 
-    // Add event listener for Enter key on the input field
-    codeInput.addEventListener("keydown", (event) => {
-        if (event.key === "Enter") {
-            validateCode();
-        }
-    });
+// Add event listener for Enter key on the input field
+codeInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    validateCode();
+  }
+});
 
-    // Function to show result with animation
-    function showResult(message, statusClass) {
-        result.textContent = message;
-        result.className = statusClass;
-        result.style.opacity = "1";
-        result.style.transform = "translateY(0)";
+// Function to show result with animation
+function showResult(message, statusClass) {
+  result.textContent = message;
+  result.className = statusClass;
+  result.style.opacity = "1";
+  result.style.transform = "translateY(0)";
 
-        // Reset animation after 2 seconds
-        setTimeout(() => {
-            result.style.opacity = "0";
-            result.style.transform = "translateY(-20px)";
-        }, 2000);
-    }
+  // Reset animation after 2 seconds
+  setTimeout(() => {
+    result.style.opacity = "0";
+    result.style.transform = "translateY(-20px)";
+  }, 2000);
+}
+
 </script>
 
 
